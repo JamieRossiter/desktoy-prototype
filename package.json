@@ -1,5 +1,23 @@
 {
   "dependencies": {
     "mqtt": "^4.3.7"
-  }
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "name": "desktoy-server",
+  "version": "1.0.0",
+  "description": "Prototype for desktoy server",
+  "main": "server.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamieRossiter/desktoy-prototype.git"
+  },
+  "author": "Jamie Rossiter",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JamieRossiter/desktoy-prototype/issues"
+  },
+  "homepage": "https://github.com/JamieRossiter/desktoy-prototype#readme"
 }
