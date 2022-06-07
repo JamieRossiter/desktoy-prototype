@@ -42,14 +42,8 @@ mqttClient.on("message", (topic, message) => {
 /* Initialise HTTP Server */
 http.createServer((req, res) => {
     // Ignore requests from list of extensions
-    let ignored = false;
-    IGNORED_EXTENSIONS.forEach(ext => {
-        if(req.url.includes(ext)){
-            return;
-        }
-        ignored = true;
-    })
-    if(ignored){
+    let ignoredExtMatched = IGNORED_EXTENSIONS.find(ext => { return req.url.includes(ext)});
+    if(!ignoredExtMatched){
         if(req.url != "/"){
             let strippedUrl = stripUrl(req.url);
             let sanitisedMsg = sanitiseMessage(strippedUrl);
