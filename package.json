@@ -19,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/JamieRossiter/desktoy-prototype/issues"
   },
-  "homepage": "https://github.com/JamieRossiter/desktoy-prototype#readme"
+  "homepage": "https://github.com/JamieRossiter/desktoy-prototype#readme",
+  "engines": {
+    "node": "16.14.2"
+  }
 }

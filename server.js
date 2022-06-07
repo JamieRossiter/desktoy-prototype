@@ -7,6 +7,7 @@
 
 /* Global Variables */
 const MQTT_TOPIC = "/desktoy/message";
+const PORT = process.env.PORT || 80;
 
 /* Imports */
 const mqtt = require("mqtt");
@@ -20,7 +21,7 @@ const mqttClient = mqtt.connect("mqtt://broker.emqx.io:1883", {
 
 /* Subscribe to generic topic upon connection */
 mqttClient.on("connect", () => {
-    console.log("Established connection with MQTT broker");
+console.log(`Established connection with MQTT broker on ${PORT}`);
 })
 
 /* Print upon receiving MQTT message from topic */
@@ -42,7 +43,7 @@ http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "text/html" });
     res.write("<h1>Desktoy Prototype Bridge Server</h1>");
     res.end();
-}).listen(80);
+}).listen(PORT);
 
 /* Filter URL artefacts */
 const stripUrl = url => {
