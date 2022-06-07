@@ -33,12 +33,14 @@ mqttClient.on("message", (topic, message) => {
 http.createServer((req, res) => {
     // Ignore favicon requests
     if(!req.url.includes("/favicon.ico")){
-        let strippedUrl = stripUrl(req.url);
-        let sanitisedMsg = sanitiseMessage(strippedUrl);
-        let strSanMsg = JSON.stringify(sanitisedMsg);
-        // Publish message to topic
-        mqttClient.publish(MQTT_TOPIC, strSanMsg);
-        console.log("Sent message: " + strSanMsg);
+        if(req.url != "/"){
+            let strippedUrl = stripUrl(req.url);
+            let sanitisedMsg = sanitiseMessage(strippedUrl);
+            let strSanMsg = JSON.stringify(sanitisedMsg);
+            // Publish message to topic
+            mqttClient.publish(MQTT_TOPIC, strSanMsg);
+            console.log("Sent message: " + strSanMsg);
+        }
     }
     res.writeHead(200, { "Content-Type": "text/html" });
     res.write("<h1>Desktoy Prototype Bridge Server</h1>");
