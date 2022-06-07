@@ -8,6 +8,16 @@
 /* Global Variables */
 const MQTT_TOPIC = "/desktoy/message";
 const PORT = process.env.PORT || 80;
+const IGNORED_EXTENSIONS = [
+    ".png",
+    ".ico",
+    ".gif",
+    ".jpg",
+    ".jpeg",
+    ".xml",
+    ".css",
+    ".js"
+]
 
 /* Imports */
 const mqtt = require("mqtt");
@@ -31,8 +41,8 @@ mqttClient.on("message", (topic, message) => {
 
 /* Initialise HTTP Server */
 http.createServer((req, res) => {
-    // Ignore favicon requests
-    if(!req.url.includes("/favicon.ico")){
+    // Ignore requests from list of extensions
+    if(!IGNORED_EXTENSIONS.includes(req.url)){
         if(req.url != "/"){
             let strippedUrl = stripUrl(req.url);
             let sanitisedMsg = sanitiseMessage(strippedUrl);
