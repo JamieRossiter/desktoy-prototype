@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "aedes": "^0.47.0",
-    "alert": "^5.0.12",
     "mqtt": "^4.3.7"
   },
   "scripts": {

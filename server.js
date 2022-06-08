@@ -23,7 +23,6 @@ let PUBLISH_SUCCESSFUL = false;
 /* Imports */
 const mqtt = require("mqtt");
 const http = require("http");
-const alert = require("alert");
 
 /* Initialise MQTT client */
 const mqttClient = mqtt.connect("mqtt://broker.emqx.io:1883", {
@@ -44,7 +43,6 @@ mqttClient.on("message", (topic, message) => {
 /* Initialise HTTP Server */
 http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "text/html" });
-    res.write("<h1>Desktoy Prototype Bridge Server</h1>");
     // Ignore requests from list of extensions
     let ignoredExtMatched = IGNORED_EXTENSIONS.find(ext => { return req.url.includes(ext)});
     if(!ignoredExtMatched){
@@ -52,24 +50,28 @@ http.createServer((req, res) => {
             let strippedUrl = stripUrl(req.url);
             let sanitisedMsg = sanitiseMessage(strippedUrl);
             let strSanMsg = JSON.stringify(sanitisedMsg);
-            res.write("<p>Sending...</p>");
             // Subscribe to topic for confirmation of publish
             mqttClient.subscribe(MQTT_TOPIC);
             // Publish message to topic
             mqttClient.publish(MQTT_TOPIC, strSanMsg);
             setTimeout(() => {
                 if(PUBLISH_SUCCESSFUL){
-                    alert(`"${strippedUrl}" was successfully published.`);
+                    res.write(`<p>${strippedUrl} was successfully published</p>`);
                     PUBLISH_SUCCESSFUL = false;
+                    res.end();
                 } else {
-                    alert("Message was not published.");
+                    res.write("<p>Message was not published.</p>");
+                    res.end();
                 }
-            }, 500);
+            }, 500)
             // Confirm sent message
             console.log("Sent message: " + strSanMsg);
+        } else {
+            res.write("<h1>Desktoy Prototype Bridge Server</h1>");
+            res.end();
         }
     }
-    res.end();
+    // res.end();
 }).listen(PORT);
 
 /* Filter URL artefacts */
