@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "aedes": "^0.47.0",
+    "alert": "^5.0.12",
     "mqtt": "^4.3.7"
   },
   "scripts": {
@@ -9,7 +11,6 @@
   "version": "1.0.0",
   "description": "Prototype for desktoy server",
   "main": "server.js",
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JamieRossiter/desktoy-prototype.git"

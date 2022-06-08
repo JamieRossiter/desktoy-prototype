@@ -18,10 +18,12 @@ const IGNORED_EXTENSIONS = [
     ".css",
     ".js"
 ]
+let PUBLISH_SUCCESSFUL = false;
 
 /* Imports */
 const mqtt = require("mqtt");
 const http = require("http");
+const alert = require("alert");
 
 /* Initialise MQTT client */
 const mqttClient = mqtt.connect("mqtt://broker.emqx.io:1883", {
@@ -31,16 +33,18 @@ const mqttClient = mqtt.connect("mqtt://broker.emqx.io:1883", {
 
 /* Subscribe to generic topic upon connection */
 mqttClient.on("connect", () => {
-console.log(`Established connection with MQTT broker on ${PORT}`);
+    console.log(`Established connection with MQTT broker on ${PORT}`);
 })
 
-/* Print upon receiving MQTT message from topic */
 mqttClient.on("message", (topic, message) => {
     console.log(`Message from ${topic}: ${message}`);
+    PUBLISH_SUCCESSFUL = true;
 })
 
 /* Initialise HTTP Server */
 http.createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.write("<h1>Desktoy Prototype Bridge Server</h1>");
     // Ignore requests from list of extensions
     let ignoredExtMatched = IGNORED_EXTENSIONS.find(ext => { return req.url.includes(ext)});
     if(!ignoredExtMatched){
@@ -48,13 +52,23 @@ http.createServer((req, res) => {
             let strippedUrl = stripUrl(req.url);
             let sanitisedMsg = sanitiseMessage(strippedUrl);
             let strSanMsg = JSON.stringify(sanitisedMsg);
+            res.write("<p>Sending...</p>");
+            // Subscribe to topic for confirmation of publish
+            mqttClient.subscribe(MQTT_TOPIC);
             // Publish message to topic
             mqttClient.publish(MQTT_TOPIC, strSanMsg);
+            setTimeout(() => {
+                if(PUBLISH_SUCCESSFUL){
+                    alert(`"${strippedUrl}" was successfully published.`);
+                    PUBLISH_SUCCESSFUL = false;
+                } else {
+                    alert("Message was not published.");
+                }
+            }, 500);
+            // Confirm sent message
             console.log("Sent message: " + strSanMsg);
         }
     }
-    res.writeHead(200, { "Content-Type": "text/html" });
-    res.write("<h1>Desktoy Prototype Bridge Server</h1>");
     res.end();
 }).listen(PORT);
 
